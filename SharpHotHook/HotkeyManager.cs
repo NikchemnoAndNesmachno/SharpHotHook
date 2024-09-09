@@ -1,4 +1,5 @@
-﻿using SharpHook;
+﻿using System.Collections.ObjectModel;
+using SharpHook;
 using SharpHook.Native;
 
 namespace SharpHotHook;
@@ -7,9 +8,9 @@ public class HotkeyManager: IDisposable
 {
     private TaskPoolGlobalHook? _hook;
     private int _pauseKeysAmount = 0;
-    public virtual ICollection<KeyCode> Codes { get; set; } = [];
+    public virtual Collection<KeyCode> Codes { get; set; } = [];
     public KeyCode[] PauseHotkey { get; set; } = [];
-    public virtual ICollection<Hotkey> Hotkeys { get; set; } = [];
+    public virtual Collection<Hotkey> Hotkeys { get; set; } = [];
     public virtual bool IsPaused { get; set; } = true;
 
     public void AddHotkey(KeyCode[] keyCodes, Action onHotkey) => Hotkeys.Add(new(onHotkey, keyCodes));

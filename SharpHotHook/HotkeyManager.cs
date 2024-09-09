@@ -26,11 +26,12 @@ public class HotkeyManager: IDisposable
 
     public async void Run()
     {
-        _hook = new TaskPoolGlobalHook(globalHookType:GlobalHookType.Keyboard);
+        _hook = new TaskPoolGlobalHook(globalHookType: GlobalHookType.Keyboard);
         _hook.KeyPressed += OnKeyPressed;     
         _hook.KeyReleased += OnKeyReleased;  
         IsPaused = false;
         _pauseKeysAmount = 0;
+        await ResetKeys();
         await _hook.RunAsync();
     }
 
@@ -44,6 +45,15 @@ public class HotkeyManager: IDisposable
     {
         IsPaused = true;
     }
+    
+    private Task ResetKeys() =>
+        Task.Run(() =>
+        {
+            foreach (var hotkey in Hotkeys)
+            {
+                hotkey.Reset();
+            }
+        });
 
     private void ActivateKey(KeyCode key) =>
         Task.Run(() =>
@@ -53,6 +63,7 @@ public class HotkeyManager: IDisposable
                 hotkey.ActivateKey(key);
             }
         });
+    
     
     private void DeactivateKey(KeyCode key) =>
         Task.Run(() =>

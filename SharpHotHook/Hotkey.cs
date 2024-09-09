@@ -19,7 +19,7 @@ public class Hotkey
     private bool[] _isActivated = [];
     private KeyCode[] _keyCodes = [];
 
-    private void Reset()
+    public void Reset()
     {
         _isActivated = Enumerable.Repeat(false, KeyCodes.Length).ToArray();
         _activatedKeys = 0;

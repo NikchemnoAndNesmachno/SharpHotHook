@@ -24,7 +24,7 @@ public class Hotkey
         _isActivated = Enumerable.Repeat(false, KeyCodes.Length).ToArray();
         _activatedKeys = 0;
     }
-    public virtual KeyCode[] KeyCodes
+    public KeyCode[] KeyCodes
     {
         get => _keyCodes;
         set

@@ -2,9 +2,9 @@
 using SharpHook.Native;
 
 namespace SharpHotHook;
-
 public class HotkeyManager: IDisposable
 {
+    
     private TaskPoolGlobalHook? _hook;
     private int _pauseKeysAmount = 0;
     public virtual IList<KeyCode> Codes { get; set; } = [];

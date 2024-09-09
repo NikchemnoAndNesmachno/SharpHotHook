@@ -7,20 +7,16 @@ public class HotkeyManager: IDisposable
     
     private TaskPoolGlobalHook? _hook;
     private int _pauseKeysAmount = 0;
-    public virtual IList<KeyCode> Codes { get; set; } = [];
-    public KeyCode[] PauseHotkey { get; set; } = [];
-    public virtual IList<Hotkey> Hotkeys { get; set; } = [];
-    public virtual bool IsPaused { get; set; } = true;
+    public IHotkeyContainer HotkeyContainer { get; set; } = new HotkeyContainerDefault();
 
-    public void AddHotkey(KeyCode[] keyCodes, Action onHotkey) => Hotkeys.Add(new(onHotkey, keyCodes));
-    public void AddHotkey(Hotkey hotkey) => Hotkeys.Add(hotkey);
-
+    public void AddHotkey(KeyCode[] keyCodes, Action onHotkey) =>
+        HotkeyContainer.Add(keyCodes, onHotkey);
     public void AddStopHotkey(KeyCode[] keyCodes) =>
-        Hotkeys.Add(new(Stop, keyCodes));
+        HotkeyContainer.Add(keyCodes, Stop);
 
     public void AddPauseHotkey(KeyCode[] keyCodes)
     {
-        PauseHotkey = keyCodes;
+        HotkeyContainer.PauseHotkey = keyCodes;
         _pauseKeysAmount = 0;
     }
 
@@ -29,7 +25,7 @@ public class HotkeyManager: IDisposable
         _hook = new TaskPoolGlobalHook(globalHookType: GlobalHookType.Keyboard);
         _hook.KeyPressed += OnKeyPressed;     
         _hook.KeyReleased += OnKeyReleased;  
-        IsPaused = false;
+        HotkeyContainer.IsPaused = false;
         _pauseKeysAmount = 0;
         await ResetKeys();
         await _hook.RunAsync();
@@ -38,18 +34,18 @@ public class HotkeyManager: IDisposable
     public void Stop()
     {
         _hook?.Dispose();
-        IsPaused = true;
+        HotkeyContainer.IsPaused = true;
     }
 
     public void Pause()
     {
-        IsPaused = true;
+        HotkeyContainer.IsPaused = true;
     }
     
     private Task ResetKeys() =>
         Task.Run(() =>
         {
-            foreach (var hotkey in Hotkeys)
+            foreach (var hotkey in HotkeyContainer.Hotkeys)
             {
                 hotkey.Reset();
             }
@@ -58,7 +54,7 @@ public class HotkeyManager: IDisposable
     private void ActivateKey(KeyCode key) =>
         Task.Run(() =>
         {
-            foreach (var hotkey in Hotkeys)
+            foreach (var hotkey in HotkeyContainer.Hotkeys)
             {
                 hotkey.ActivateKey(key);
             }
@@ -68,35 +64,34 @@ public class HotkeyManager: IDisposable
     private void DeactivateKey(KeyCode key) =>
         Task.Run(() =>
         {
-            foreach (var hotkey in Hotkeys)
+            foreach (var hotkey in HotkeyContainer.Hotkeys)
             {
                 hotkey.DeactivateKey(key);
             }
         });
     private bool IsPauseActivated()
     {
-        var set1 = new HashSet<KeyCode>(Codes);
-        var set2 = new HashSet<KeyCode>(PauseHotkey);
+        var set1 = new HashSet<KeyCode>(HotkeyContainer.Codes);
+        var set2 = new HashSet<KeyCode>(HotkeyContainer.PauseHotkey);
         return set1.SetEquals(set2);
     }
-    protected virtual void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
+    private void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
     {
-        Codes.Remove(e.Data.KeyCode);
-        if(IsPaused) return;
+        HotkeyContainer.Codes.Remove(e.Data.KeyCode);
+        if(HotkeyContainer.IsPaused) return;
         DeactivateKey(e.Data.KeyCode);
     }
    
-    protected virtual void OnKeyPressed(object? sender, KeyboardHookEventArgs e)
+    private void OnKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
-        if(Codes.Contains(e.Data.KeyCode)) return;
-        Codes.Add(e.Data.KeyCode);
+        if(HotkeyContainer.Codes.Contains(e.Data.KeyCode)) return;
+        HotkeyContainer.Codes.Add(e.Data.KeyCode);
         if (IsPauseActivated())
         {
-            IsPaused = !IsPaused;
-            Console.WriteLine("Paused: " + IsPaused);
+            HotkeyContainer.IsPaused = !HotkeyContainer.IsPaused;
         }
 
-        if (IsPaused) return;
+        if (HotkeyContainer.IsPaused) return;
         ActivateKey(e.Data.KeyCode);
     }
 

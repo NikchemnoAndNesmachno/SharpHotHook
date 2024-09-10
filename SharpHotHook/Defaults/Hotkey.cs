@@ -1,6 +1,6 @@
 using SharpHook.Native;
 
-namespace SharpHotHook;
+namespace SharpHotHook.Defaults;
 
 public class Hotkey: IHotkey
 {

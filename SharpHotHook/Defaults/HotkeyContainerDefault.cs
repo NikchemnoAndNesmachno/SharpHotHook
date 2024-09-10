@@ -1,10 +1,9 @@
 using SharpHook.Native;
 
-namespace SharpHotHook;
+namespace SharpHotHook.Defaults;
 
 public class HotkeyContainerDefault: IHotkeyContainer
 {
-    public IList<KeyCode> Codes { get; set; } = [];
     public KeyCode[] PauseHotkey { get; set; } = [];
     public IList<IHotkey> Hotkeys { get; set; } = [];
     public bool IsPaused { get; set; }

@@ -1,12 +1,12 @@
 using SharpHook.Native;
 
-namespace SharpHotHook;
+namespace SharpHotHook.Interfaces;
 
 public interface IHotkey
 {
     int ActivatedKeys { get; set; }
-    bool[] IsActivated { get; set; }
-    KeyCode[] KeyCodes { get; set; }
+    IList<bool> IsActivated { get; set; }
+    IList<KeyCode> KeyCodes { get; set; } 
     
     public Action OnHotkey { get; set; }
 }

@@ -1,9 +1,10 @@
 using SharpHook;
 using SharpHook.Native;
+using SharpHotHook.Interfaces;
 
 namespace SharpHotHook;
 
-public class KeyReaderBase: IDisposable
+public class KeyReaderBase: IDisposable, IKeyReader
 {
     private TaskPoolGlobalHook? _hook;
     public IList<KeyCode> PressedKeys { get; set; } = [];
@@ -14,27 +15,27 @@ public class KeyReaderBase: IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
+    public virtual void OnKeyReleased(KeyboardHookEventArgs e)
     {
         PressedKeys.Remove(e.Data.KeyCode);
     }
 
-    protected virtual bool OnKeyPressed(object? sender, KeyboardHookEventArgs e)
+    public virtual bool OnKeyPressed(KeyboardHookEventArgs e)
     {
         if(PressedKeys.Contains(e.Data.KeyCode)) return false;
         PressedKeys.Add(e.Data.KeyCode);
         return true;
     }
     
-    public virtual async void Run()
+    public virtual async void Start()
     {
         _hook = new TaskPoolGlobalHook(globalHookType: GlobalHookType.Keyboard);
-        _hook.KeyPressed += (o, e)=> (o as KeyReaderBase)?.OnKeyPressed(o, e);     
-        _hook.KeyReleased += (o, e)=>(o as KeyReaderBase)?.OnKeyReleased(o,e);  
+        _hook.KeyPressed += (o, e)=> OnKeyPressed(e);     
+        _hook.KeyReleased +=(o, e) => OnKeyReleased(e);  
         await _hook.RunAsync();
     }
 
-    public virtual async void Stop()
+    public virtual void Stop()
     {
         _hook?.Dispose();
     }

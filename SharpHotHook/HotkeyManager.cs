@@ -1,39 +1,22 @@
 ﻿using SharpHook;
 using SharpHook.Native;
-using SharpHotHook.Defaults;
+using SharpHotHook.Interfaces;
 
 namespace SharpHotHook;
-public class HotkeyManager: KeyReaderBase
+public class HotkeyManager: KeyReaderBase, IHotkeyContainer
 {
-    public IHotkeyContainer HotkeyContainer { get; set; } = new HotkeyContainerDefault();
-
-    public void AddHotkey(KeyCode[] keyCodes, Action onHotkey) =>
-        HotkeyContainer.Add(keyCodes, onHotkey);
-    public void AddStopHotkey(KeyCode[] keyCodes) =>
-        HotkeyContainer.Add(keyCodes, Stop);
-
-    public void AddPauseHotkey(KeyCode[] keyCodes) => 
-        HotkeyContainer.PauseHotkey = keyCodes;
-
-    public override async void Run()
+    public virtual IList<IHotkey> Hotkeys { get; set; } = [];
+    public override async void Start()
     {
-        HotkeyContainer.IsPaused = false;
         await ResetKeys();
-        base.Run();
+        base.Start();
     }
-
-    public override void Stop()
-    {
-        base.Stop();
-        HotkeyContainer.IsPaused = true;
-    }
-
-    public void Pause() => HotkeyContainer.IsPaused = true;
+    
 
     private Task ResetKeys() =>
         Task.Run(() =>
         {
-            foreach (var hotkey in HotkeyContainer.Hotkeys)
+            foreach (var hotkey in Hotkeys)
             {
                 hotkey.Reset();
             }
@@ -42,9 +25,9 @@ public class HotkeyManager: KeyReaderBase
     private void ActivateKey(KeyCode key) =>
         Task.Run(() =>
         {
-            foreach (var hotkey in HotkeyContainer.Hotkeys)
+            foreach (var hotkey in Hotkeys)
             {
-                hotkey.ActivateKey(key);
+                hotkey.ActivateKey(key, PressedKeys);
             }
         });
     
@@ -52,37 +35,34 @@ public class HotkeyManager: KeyReaderBase
     private void DeactivateKey(KeyCode key) =>
         Task.Run(() =>
         {
-            foreach (var hotkey in HotkeyContainer.Hotkeys)
+            foreach (var hotkey in Hotkeys)
             {
                 hotkey.DeactivateKey(key);
             }
         });
-    private bool IsPauseActivated()
+    
+    public override void OnKeyReleased(KeyboardHookEventArgs e)
     {
-        var set1 = new HashSet<KeyCode>(PressedKeys);
-        var set2 = new HashSet<KeyCode>(HotkeyContainer.PauseHotkey);
-        return set1.SetEquals(set2);
-    }
-    protected override void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
-    {
-        base.OnKeyReleased(sender, e);
-        if(HotkeyContainer.IsPaused) return;
+        base.OnKeyReleased(e);
         DeactivateKey(e.Data.KeyCode);
     }
    
-    protected override bool OnKeyPressed(object? sender, KeyboardHookEventArgs e)
+    public override bool OnKeyPressed(KeyboardHookEventArgs e)
     {
-        if (!base.OnKeyPressed(sender, e)) return false;
-        if (IsPauseActivated())
-        {
-            HotkeyContainer.IsPaused = !HotkeyContainer.IsPaused;
-        }
-
-        if (!HotkeyContainer.IsPaused)
-        {
-            ActivateKey(e.Data.KeyCode);    
-        }
-        
+        if (!base.OnKeyPressed(e)) return false;
+        ActivateKey(e.Data.KeyCode);    
         return true;
+    }
+    
+    public void Add(IHotkey hotkey) => Hotkeys.Add(hotkey);
+
+    public void Remove(IList<KeyCode> codes)
+    {
+        for (var i = 0; i < Hotkeys.Count; i++)
+        {
+            if (!Hotkeys[i].Equal(codes)) continue;
+            Hotkeys.RemoveAt(i);
+            return;
+        }
     }
 }

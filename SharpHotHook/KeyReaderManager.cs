@@ -1,21 +1,15 @@
 using SharpHook;
 using SharpHook.Native;
-using SharpHotHook.Defaults;
 
 namespace SharpHotHook;
 
 public class KeyReaderManager: KeyReaderBase
 {
-    public IKeyReadContainer KeyReadContainer { get; set; } = new KeyContainerDefault();
+    public virtual KeyCode CurrentKey { get; set; } = KeyCode.VcUndefined;
 
-    public KeyCode CurrentKey
+    public override bool OnKeyPressed(KeyboardHookEventArgs e)
     {
-        get => KeyReadContainer.CurrentKey;
-        set => KeyReadContainer.CurrentKey = value;
-    }
-    protected override bool OnKeyPressed(object? sender, KeyboardHookEventArgs e)
-    {
-        if (!base.OnKeyPressed(sender, e)) return false;
+        if (!base.OnKeyPressed(e)) return false;
         CurrentKey = e.Data.KeyCode;
         return true;
 

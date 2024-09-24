@@ -7,7 +7,10 @@ public static class HotkeyMethods
 {
     public static void Reset(this IHotkey hotkey)
     {
-        hotkey.IsActivated.Clear();
+        for (int i = 0; i < hotkey.IsActivated.Count; i++)
+        {
+            hotkey.IsActivated[i] = false;
+        }
         hotkey.ActivatedKeys = 0;
     }
 

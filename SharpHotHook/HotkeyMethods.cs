@@ -18,7 +18,7 @@ public static class HotkeyMethods
     {
         var set1 = new HashSet<KeyCode>(hotkey.KeyCodes);
         var set2 = new HashSet<KeyCode>(keyCodes);
-        return set1.Equals(set2);
+        return set1.SetEquals(set2);
     }
     public static void ActivateKey(this IHotkey hotkey, KeyCode key, IList<KeyCode> pressedCodes)
     {

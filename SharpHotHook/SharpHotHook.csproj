@@ -5,16 +5,29 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.3.2</Version>
+        <Version>0.5</Version>
         <Title>SharpHotHook</Title>
         <Authors>NikchemnoAndNesmachno</Authors>
         <Description>Read global hotkeys on C#. // Зчитування глобальних гарячих клавіш</Description>
         <PackageProjectUrl>https://github.com/NikchemnoAndNesmachno/SharpHotHook</PackageProjectUrl>
         <RepositoryUrl>https://github.com/NikchemnoAndNesmachno/SharpHotHook</RepositoryUrl>
+        <PackageLicenseFile>License.md</PackageLicenseFile>
+        <PackageReadmeFile>README.en.md</PackageReadmeFile>
+        <Copyright>NIN</Copyright>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageTags>sharphook, hotkey, c#, key, global</PackageTags>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="SharpHook" Version="5.3.7" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <None Include="..\License.md" Pack="true" PackagePath="" CopyToOutputDirectory="Always"/>
+        <None Include="..\icon.png" Pack="true" PackagePath="" CopyToOutputDirectory="Always" Link="icon.png"/>
+        <None Include="..\README.md" Pack="true" PackagePath=""/>
+        <None Include="..\README.en.md" Pack="true" PackagePath="" CopyToOutputDirectory="Always"/>
+        <None Include="..\README.ua.md" Pack="true" PackagePath="" CopyToOutputDirectory="Always"/>
+    </ItemGroup>
 </Project>

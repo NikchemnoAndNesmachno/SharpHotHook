@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpHotHook", "SharpHotHook\SharpHotHook.csproj", "{C09B2349-3FBF-47DC-96CA-CDA7F79514F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trash", "..\Trash\Trash.csproj", "{D2C1EAFA-EF1D-4069-A60C-86875A6607DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{C09B2349-3FBF-47DC-96CA-CDA7F79514F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C09B2349-3FBF-47DC-96CA-CDA7F79514F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C09B2349-3FBF-47DC-96CA-CDA7F79514F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C1EAFA-EF1D-4069-A60C-86875A6607DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C1EAFA-EF1D-4069-A60C-86875A6607DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C1EAFA-EF1D-4069-A60C-86875A6607DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C1EAFA-EF1D-4069-A60C-86875A6607DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

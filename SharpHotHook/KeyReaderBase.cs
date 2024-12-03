@@ -6,11 +6,11 @@ namespace SharpHotHook;
 
 public class KeyReaderBase: IDisposable, IKeyReader
 {
-    private TaskPoolGlobalHook? _hook;
+    protected SimpleGlobalHook? Hook;
     public IList<KeyCode> PressedKeys { get; set; } = [];
     public void Dispose()
     {
-        _hook?.Dispose();
+        Stop();
         //Added this line only because of the IDE's hint. I am not aware about importance of it.
         GC.SuppressFinalize(this);
     }
@@ -26,17 +26,22 @@ public class KeyReaderBase: IDisposable, IKeyReader
         PressedKeys.Add(e.Data.KeyCode);
         return true;
     }
-    
-    public virtual async void Start()
+
+    private void OnKeyPressed(object? o, KeyboardHookEventArgs e) => OnKeyPressed(e);
+    private void OnKeyReleased(object? o, KeyboardHookEventArgs e) => OnKeyReleased(e);
+    public async virtual void Start()
     {
-        _hook = new TaskPoolGlobalHook(globalHookType: GlobalHookType.Keyboard);
-        _hook.KeyPressed += (o, e)=> OnKeyPressed(e);     
-        _hook.KeyReleased +=(o, e) => OnKeyReleased(e);  
-        await _hook.RunAsync();
+        Hook = new SimpleGlobalHook(globalHookType: GlobalHookType.Keyboard);
+        Hook.KeyPressed += OnKeyPressed;
+        Hook.KeyReleased += OnKeyReleased;  
+        await Hook.RunAsync();
     }
 
     public virtual void Stop()
     {
-        _hook?.Dispose();
+        if(Hook is null || Hook.IsDisposed) return; 
+        Hook.KeyPressed -= OnKeyPressed;
+        Hook.KeyReleased -= OnKeyReleased;
+        Hook.Dispose();
     }
 }

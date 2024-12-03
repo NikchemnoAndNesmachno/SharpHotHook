@@ -1,7 +1,10 @@
 # SharpHotHook
-Проста бібліотека для зчитування комбінацій глобальних клавіш, що використовує бібліотеку \
-[SharpHook](https://github.com/TolikPylypchuk/SharpHook) \
-Nuget [тут](https://www.nuget.org/packages/SharpHotHook).
 
-## Використання
-Потім додам
+Раді вітати Вас на сторінці проєкту SharpHotHook! Оберіть мову для продовження:
+
+Welcome to the SharpHotHook project! Please select your preferred language:
+
+- [🇺🇦 Українська (UA)](README.ua.md)
+- [🇬🇧 English (EN)](README.en.md)
+
+---

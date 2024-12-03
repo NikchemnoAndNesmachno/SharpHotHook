@@ -20,7 +20,7 @@ public static class HotkeyMethods
         var set2 = new HashSet<KeyCode>(keyCodes);
         return set1.SetEquals(set2);
     }
-    public static void ActivateKey(this IHotkey hotkey, KeyCode key, IList<KeyCode> pressedCodes)
+    public static void ActivateKey(this IHotkey hotkey, KeyCode key, int count)
     {
         var index = hotkey.KeyCodes.IndexOf(key);
         if (index == -1) return;
@@ -30,7 +30,7 @@ public static class HotkeyMethods
         hotkey.IsActivated[index] = true;
         
         if (hotkey.ActivatedKeys != hotkey.KeyCodes.Count) return;
-        if (hotkey.KeyCodes.Count != pressedCodes.Count) return;
+        if (hotkey.KeyCodes.Count != count) return;
         hotkey.OnHotkey();
     }
     

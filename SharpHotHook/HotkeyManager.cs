@@ -5,7 +5,7 @@ using SharpHotHook.Interfaces;
 namespace SharpHotHook;
 public class HotkeyManager: KeyReaderBase, IHotkeyContainer
 {
-    public virtual IList<IHotkey> Hotkeys { get; set; } = [];
+    public IList<IHotkey> Hotkeys { get; set; } = [];
     public override async void Start()
     {
         await ResetKeys();
@@ -22,16 +22,19 @@ public class HotkeyManager: KeyReaderBase, IHotkeyContainer
             }
         });
 
-    private void ActivateKey(KeyCode key) =>
+    private void ActivateKey(KeyCode key)
+    {
+        int count = PressedKeys.Count;
         Task.Run(() =>
         {
             foreach (var hotkey in Hotkeys)
             {
-                hotkey.ActivateKey(key, PressedKeys);
+                hotkey.ActivateKey(key, count);
             }
         });
-    
-    
+    }
+
+
     private void DeactivateKey(KeyCode key) =>
         Task.Run(() =>
         {
